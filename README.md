@@ -1,3 +1,48 @@
+
+## Start Here
+
+**Q-OPTIMA ULTIMATE** is a noise-aware quantum simulation
+and Trotter-step recommendation project developed by
+**3AM ENGINEERS** for Qiskit Fall Fest 2026.
+
+### Quick Project Navigation
+
+| What you want to see | Where to find it |
+|---|---|
+| Main reproducible experiment | `main.ipynb` |
+| Technical report | `REPORT OF THE SOLUTION.pdf` |
+| Custom Processor D | `processors/processor_D.json` |
+| Processor D diagram | `processors/Processor_D_3AM_ENGINEERS.jpg` |
+| Required benchmark results | `results/tables/` |
+| Simulation graphs | `results/figures/` |
+| Ultimate hybrid advisor | `ultimate_hybrid_advisor.py` |
+| Processor ranking | `ultimate_processor_advisor.py` |
+| V2 prediction model | `advisor_v2.py` |
+| Validation experiments | `final_advisor_test.py`, `ultimate_validation.py` |
+
+### Key Findings
+
+- The benchmark evaluated 60 noisy simulation configurations.
+- Processor D matched Processor B's simulated fidelity at
+  the selected standard-noise configuration while using
+  four rather than nine physical qubits.
+- The V2 quadratic predictor achieved 3/5 exact matches
+  on five held-out simulated noise settings.
+- The Ultimate hybrid advisor reproduced V2's predictions
+  on all five checked settings and added resource-based
+  processor selection.
+- An alternative gate-count predictor was tested but did
+  not outperform V2.
+
+### Reproducibility
+
+Install the dependencies listed in `requirements.txt`,
+then open `main.ipynb` and run its cells in order.
+
+The notebook calls supporting Python scripts located in
+the repository root. These scripts are intentionally kept
+in place to preserve reproducibility.
+
 # Q-OPTIMA 2026
 ### Noise-Aware Trotter-Step Optimization for Quantum Simulation
 
