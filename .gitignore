@@ -24,3 +24,8 @@ Thumbs.db
 
 QFF-2026-PHASE-2/
 starter_extract/
+# Local experimental files not included in final submission
+TECHNICAL REPORT.pdf
+zne_experiment.py
+zne_s3_experiment.py
+results/tables/zne_s3_results.csv
