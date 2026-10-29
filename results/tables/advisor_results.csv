@@ -1,0 +1,4 @@
+noise_scale,predicted_steps,actual_optimal_steps,fidelity_at_prediction,optimal_fidelity,fidelity_regret
+0.5,8,8,0.7821182575654816,0.7821182575654816,0.0
+1.0,7,7,0.6628162939577391,0.6628162939577391,0.0
+2.0,6,6,0.503075984386811,0.503075984386811,0.0

@@ -1,0 +1,11 @@
+model,noise_scale,predicted_steps,actual_optimal_steps,fidelity_regret,exact_match
+linear,0.4,10,8,0.007603639668962048,0
+quadratic,0.4,8,8,0.0,1
+linear,0.9,7,7,0.0,1
+quadratic,0.9,7,7,0.0,1
+linear,1.25,7,6,0.0010743346603507842,0
+quadratic,1.25,7,6,0.0010743346603507842,0
+linear,1.8,6,6,0.0,1
+quadratic,1.8,6,6,0.0,1
+linear,2.8,6,5,0.001036357851281089,0
+quadratic,2.8,6,5,0.001036357851281089,0

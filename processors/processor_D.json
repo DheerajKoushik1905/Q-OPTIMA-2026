@@ -1,0 +1,20 @@
+
+{
+  "name": "Processor D",
+  "team": "3AM ENGINEERS",
+  "problem_statement": "PS-S3",
+  "num_qubits": 4,
+  "edges": [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0]
+  ],
+  "basis_gates": ["rz", "sx", "x", "cx"],
+  "error_rates": {
+    "p1": 0.001,
+    "p2": 0.005,
+    "p_readout": 0.01
+  },
+  "justification": "The target four-spin TFIM ring requires interactions between qubits 0 and 1, 1 and 2, 2 and 3, and 3 and 0. A four-qubit ring directly supports all these bonds, reducing routing SWAP requirements compared with less suitable placements on the baseline processors. The CX-native gate set allows standard transpilation. We use single-qubit depolarizing error 0.001, two-qubit depolarizing error 0.005, and readout error 0.01. The design trades flexibility for low routing overhead and a minimal physical qubit count. Its actual performance will be established by the required benchmarks."
+}

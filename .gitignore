@@ -1,0 +1,26 @@
+
+# Python environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+
+# Local secrets
+.env
+.env.*
+
+QFF-2026-PHASE-2/
+starter_extract/
