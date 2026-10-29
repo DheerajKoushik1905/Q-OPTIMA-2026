@@ -60,6 +60,34 @@ Its central contribution is a noise-aware advisor that recommends a Trotter step
 
 ## Experimental Setup
 
+### Optional Extension: Zero-Noise Extrapolation (ZNE)
+
+We implemented linear Zero-Noise Extrapolation as an additional error-mitigation experiment for the PS-S3 four-qubit transverse-field Ising model.
+
+The experiment uses Processor D, first-order Trotter circuits, 4,096 measurement shots per noise scale, and 20 independently seeded simulation trials. Noise scales of 1.0, 1.5, 2.0 and 2.5 are used to estimate the zero-noise staggered magnetization.
+
+**Observed results:**
+
+| Trotter steps | Mean raw error | Mean ZNE error | Error reduction |
+|---|---:|---:|---:|
+| 7 | 0.177074 | 0.063891 | 63.92% |
+| 8 | 0.208288 | 0.092614 | 55.54% |
+
+All 20 trials at each of these two step counts showed lower absolute error after ZNE, measured relative to the ideal Trotter observable.
+
+**Reproduction:**
+
+```powershell
+.\.venv\Scripts\python.exe zne_s3_robustness.py
+```
+
+**Output files:**
+- `results/tables/zne_s3_robustness.csv`
+- `results/tables/zne_s3_robustness_summary.csv`
+
+This is an optional experiment separate from the required benchmark. It demonstrates mitigation of observable error under a synthetic noise model; it does not establish improved state fidelity or real-hardware performance.
+
+
 - Model: Four-qubit transverse-field Ising model (TFIM), periodic boundary conditions
 - Couplings: J = 1, g = 1
 - Initial state: |1010⟩
@@ -180,3 +208,4 @@ Generative AI assisted with code drafting, debugging, experiment planning, docum
 
 ## Competition Submission
 
+git status --short
