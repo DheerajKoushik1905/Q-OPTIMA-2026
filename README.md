@@ -1,5 +1,36 @@
 
-## Start Here
+## Start Here — Guide for Judges
+
+**Q-OPTIMA ULTIMATE** is a noise-aware quantum simulation project developed by **3AM ENGINEERS** for Qiskit Fall Fest 2026, Phase 2, PS-S3.
+
+### Recommended Review Order
+
+1. **`main.ipynb`** — Main demonstration, simulation results, advisor evaluation and ZNE extension.
+2. **`Q_OPTIMA_ULTIMATE_ZNE_Final_Technical_Report.pdf`** — Complete technical explanation, experimental findings and limitations.
+3. **`results/figures/`** — Visual evidence of the noise–accuracy trade-off.
+4. **`results/tables/`** — Numerical benchmark, validation and robustness results.
+5. **`ultimate_hybrid_advisor.py`** — Integrated step-count and processor recommendation.
+6. **`zne_s3_robustness.py`** — Reproducible ZNE robustness experiment.
+
+### Main Contributions
+
+- Reproduced the PS-S3 benchmark across 60 noisy simulations.
+- Designed a four-qubit ring processor that avoids routing swaps for the tested workload.
+- Developed a V2 advisor achieving 3/5 exact step-count matches on five additional simulated noise settings.
+- Integrated a hybrid advisor combining step-count prediction and processor-resource selection.
+- Demonstrated lower staggered-magnetization error with ZNE in independently seeded simulations.
+
+### Quick Reproduction
+
+From the repository root, install dependencies using `requirements.txt`, then open and run `main.ipynb` in a compatible Python environment.
+
+To reproduce the ZNE robustness experiment:
+
+```powershell
+python zne_s3_robustness.py
+```
+
+All reported results are based on classical quantum-circuit simulations, not real quantum hardware.
 
 **Q-OPTIMA ULTIMATE** is a noise-aware quantum simulation
 and Trotter-step recommendation project developed by
