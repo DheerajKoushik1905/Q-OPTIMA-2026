@@ -3,7 +3,7 @@ import csv
 import math
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 TABLES = ROOT / "results" / "tables"
 
 STEPS = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16]

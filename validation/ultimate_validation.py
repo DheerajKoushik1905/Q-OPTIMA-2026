@@ -2,7 +2,7 @@
 import csv
 from pathlib import Path
 
-TABLES = Path(__file__).resolve().parent / "results" / "tables"
+TABLES = Path(__file__).resolve().parent.parent / "results" / "tables"
 
 def load(name):
     with (TABLES / name).open(

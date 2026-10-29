@@ -71,7 +71,8 @@ fig.text(
     fontsize=11
 )
 
-output = Path("processors") / "Processor_D_3AM_ENGINEERS.jpg"
+ROOT = Path(__file__).resolve().parent.parent
+output = ROOT / "processors" / "Processor_D_3AM_ENGINEERS.jpg"
 output.parent.mkdir(parents=True, exist_ok=True)
 
 fig.savefig(

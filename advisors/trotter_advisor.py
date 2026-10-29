@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 INPUT = ROOT / "results" / "tables" / "s3_scan.csv"
 OUTPUT = ROOT / "results" / "tables" / "advisor_results.csv"
 

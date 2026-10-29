@@ -1,242 +1,432 @@
+# Q-OPTIMA ULTIMATE
 
-## Start Here — Guide for Judges
+### Noise-Aware Quantum Simulation, Trotter-Step Optimization, Processor Selection, and Zero-Noise Extrapolation
 
-**Q-OPTIMA ULTIMATE** is a noise-aware quantum simulation project developed by **3AM ENGINEERS** for Qiskit Fall Fest 2026, Phase 2, PS-S3.
+**Competition:** Qiskit Fall Fest 2026 — Phase 2
+**Track:** Quantum Simulation
+**Problem Statement:** PS-S3 — Noise Accumulation in Trotter Circuits
+**Team:** 3AM ENGINEERS
 
-### Recommended Review Order
+---
 
-1. **`main.ipynb`** — Main demonstration, simulation results, advisor evaluation and ZNE extension.
-2. **`Q_OPTIMA_ULTIMATE_ZNE_Final_Technical_Report.pdf`** — Complete technical explanation, experimental findings and limitations.
-3. **`results/figures/`** — Visual evidence of the noise–accuracy trade-off.
-4. **`results/tables/`** — Numerical benchmark, validation and robustness results.
-5. **`ultimate_hybrid_advisor.py`** — Integrated step-count and processor recommendation.
-6. **`zne_s3_robustness.py`** — Reproducible ZNE robustness experiment.
+## 1. Project Overview
 
-### Main Contributions
+Q-OPTIMA ULTIMATE is a quantum simulation project designed to investigate the trade-off between Trotter approximation error and hardware noise.
 
-- Reproduced the PS-S3 benchmark across 60 noisy simulations.
-- Designed a four-qubit ring processor that avoids routing swaps for the tested workload.
-- Developed a V2 advisor achieving 3/5 exact step-count matches on five additional simulated noise settings.
-- Integrated a hybrid advisor combining step-count prediction and processor-resource selection.
-- Demonstrated lower staggered-magnetization error with ZNE in independently seeded simulations.
+Increasing the number of Trotter steps generally improves the approximation of ideal time evolution. However, additional steps also increase circuit depth and the number of noisy quantum gates.
 
-### Quick Reproduction
+Therefore, the largest number of Trotter steps is not necessarily the best choice on noisy hardware.
 
-From the repository root, install dependencies using `requirements.txt`, then open and run `main.ipynb` in a compatible Python environment.
+Our project explores this trade-off using Qiskit simulations and provides:
 
-To reproduce the ZNE robustness experiment:
+- Noisy Trotter-circuit benchmarking.
+- Comparison of quantum processor connectivity.
+- A noise-aware Trotter-step advisor.
+- Resource-aware processor recommendations.
+- Validation against simulated fidelity results.
+- Zero-Noise Extrapolation (ZNE) experiments.
+- Reproducible Python scripts, datasets, plots, and a Jupyter notebook.
 
-```powershell
-python zne_s3_robustness.py
-```
+## 2. Quantum System
 
-All reported results are based on classical quantum-circuit simulations, not real quantum hardware.
+We simulate a four-qubit transverse-field Ising model with periodic boundary conditions.
 
-**Q-OPTIMA ULTIMATE** is a noise-aware quantum simulation
-and Trotter-step recommendation project developed by
-**3AM ENGINEERS** for Qiskit Fall Fest 2026.
+The Hamiltonian is:
 
-### Quick Project Navigation
+\[
+H=-J\sum_{(i,j)\in E}Z_iZ_j-g\sum_{i=0}^{3}X_i
+\]
 
-| What you want to see | Where to find it |
+where:
+
+\[
+E=\{(0,1),(1,2),(2,3),(3,0)\}
+\]
+
+The simulation parameters are:
+
+| Parameter | Value |
 |---|---|
-| Main reproducible experiment | `main.ipynb` |
-| Technical report | `Q_OPTIMA_ULTIMATE_Final_Technical_Report.pdf` |
-| Custom Processor D | `processors/processor_D.json` |
-| Processor D diagram | `processors/Processor_D_3AM_ENGINEERS.jpg` |
-| Required benchmark results | `results/tables/` |
-| Simulation graphs | `results/figures/` |
-| Ultimate hybrid advisor | `ultimate_hybrid_advisor.py` |
-| Processor ranking | `ultimate_processor_advisor.py` |
-| V2 prediction model | `advisor_v2.py` |
-| Validation experiments | `final_advisor_test.py`, `ultimate_validation.py` |
+| Number of logical qubits | 4 |
+| Interaction strength, J | 1 |
+| Transverse field, g | 1 |
+| Initial state | \(\lvert1010\rangle\) |
+| Total simulation time | 2 |
+| Trotter method | First-order |
+| Trotter step counts | 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16 |
 
-### Key Findings
+The first-order Trotter approximation is:
 
-- The benchmark evaluated 60 noisy simulation configurations.
-- Processor D matched Processor B's simulated fidelity at
-  the selected standard-noise configuration while using
-  four rather than nine physical qubits.
-- The V2 quadratic predictor achieved 3/5 exact matches
-  on five held-out simulated noise settings.
-- The Ultimate hybrid advisor reproduced V2's predictions
-  on all five checked settings and added resource-based
-  processor selection.
-- An alternative gate-count predictor was tested but did
-  not outperform V2.
+\[
+U(T)\approx\left(e^{-iH_{ZZ}T/n}e^{-iH_XT/n}\right)^n
+\]
 
-### Reproducibility
+where \(n\) is the number of Trotter steps.
 
-Install the dependencies listed in `requirements.txt`,
-then open `main.ipynb` and run its cells in order.
+## 3. Processor Comparison
 
-The notebook calls supporting Python scripts located in
-the repository root. These scripts are intentionally kept
-in place to preserve reproducibility.
+We evaluate three processor configurations.
 
-# Q-OPTIMA 2026
-### Noise-Aware Trotter-Step Optimization for Quantum Simulation
+| Processor | Physical qubits | Connectivity |
+|---|---:|---|
+| A | 5 | Branching tree |
+| B | 9 | Heavy-hex-inspired |
+| D | 4 | Four-qubit ring |
 
-**Qiskit Fall Fest 2026 | Phase 2 | Quantum Simulation | PS-S3**
+Processor D is a custom configuration designed by our team.
 
-## Overview
+Its connectivity is:
 
-Q-OPTIMA investigates how Trotter approximation error, quantum gate noise, and processor connectivity influence the accuracy of digital quantum simulation.
+- Qubit 0 connected to qubit 1.
+- Qubit 1 connected to qubit 2.
+- Qubit 2 connected to qubit 3.
+- Qubit 3 connected to qubit 0.
 
-Its central contribution is a noise-aware advisor that recommends a Trotter step count instead of blindly increasing circuit depth.
+The processor configuration and diagram are available at:
 
-## Research Question
+- `processors/processor_D.json`
+- `processors/Processor_D_3AM_ENGINEERS.jpg`
 
-**Can we select a Trotter step count that improves quantum simulation fidelity under realistic processor noise?**
+The simulation uses the basis gates `rz`, `sx`, `x`, and `cx`.
 
-## Experimental Setup
+The base noise model uses:
 
-### Optional Extension: Zero-Noise Extrapolation (ZNE)
-
-We implemented linear Zero-Noise Extrapolation as an additional error-mitigation experiment for the PS-S3 four-qubit transverse-field Ising model.
-
-The experiment uses Processor D, first-order Trotter circuits, 4,096 measurement shots per noise scale, and 20 independently seeded simulation trials. Noise scales of 1.0, 1.5, 2.0 and 2.5 are used to estimate the zero-noise staggered magnetization.
-
-**Observed results:**
-
-| Trotter steps | Mean raw error | Mean ZNE error | Error reduction |
-|---|---:|---:|---:|
-| 7 | 0.177074 | 0.063891 | 63.92% |
-| 8 | 0.208288 | 0.092614 | 55.54% |
-
-All 20 trials at each of these two step counts showed lower absolute error after ZNE, measured relative to the ideal Trotter observable.
-
-**Reproduction:**
-
-```powershell
-.\.venv\Scripts\python.exe zne_s3_robustness.py
-```
-
-**Output files:**
-- `results/tables/zne_s3_robustness.csv`
-- `results/tables/zne_s3_robustness_summary.csv`
-
-This is an optional experiment separate from the required benchmark. It demonstrates mitigation of observable error under a synthetic noise model; it does not establish improved state fidelity or real-hardware performance.
-
-
-- Model: Four-qubit transverse-field Ising model (TFIM), periodic boundary conditions
-- Couplings: J = 1, g = 1
-- Initial state: |1010⟩
-- Evolution time: T = 2
-- Method: First-order Trotterization
-- Trotter steps: 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16
-- Processors: A, B, and custom Processor D
-- Noise scales: 0.5×, 1×, 2× for Processor D
-- Measurement shots: 4096
-
-## Main Results
-
-### Noise-Aware Optimization
-
-| Processor D noise scale | Optimal Trotter steps |
+| Noise parameter | Value |
 |---|---:|
-| 0.5× | 8 |
-| 1× | 7 |
-| 2× | 6 |
+| Single-qubit gate error probability | 0.001 |
+| Two-qubit gate error probability | 0.005 |
+| Readout error probability | 0.01 |
 
-Increasing noise shifts the optimal circuit depth toward fewer Trotter steps.
+These are simulation assumptions, not measurements from physical quantum hardware.
 
-### Advisor Performance
+## 4. Main Simulation Results
 
-On five additional simulated noise settings:
+The project evaluates fidelity across different Trotter-step counts, processors, and noise scales.
 
-| Strategy | Exact matches | Mean fidelity regret |
+Selected results from the saved simulation summary are:
+
+| Processor | Noise scale | Best step count | Simulated noisy fidelity |
+|---|---:|---:|---:|
+| A | 1.0× | 6 | 0.577419 |
+| B | 1.0× | 7 | 0.662816 |
+| D | 0.5× | 8 | 0.782118 |
+| D | 1.0× | 7 | 0.662816 |
+| D | 2.0× | 6 | 0.503076 |
+
+These results demonstrate that the preferred Trotter-step count depends on the noise conditions.
+
+At the base noise scale, processors B and D achieve the same simulated fidelity in this experiment. Processor D uses fewer physical qubits.
+
+At eight Trotter steps:
+
+| Processor | Physical qubits | Two-qubit gates | Circuit depth | Routing overhead |
+|---|---:|---:|---:|---:|
+| A | 5 | 109 | 134 | 45 |
+| B | 9 | 64 | 89 | 0 |
+| D | 4 | 64 | 89 | 0 |
+
+Processor D provides a compact four-qubit topology that directly supports the simulated ring interactions.
+
+## 5. Noise-Aware Trotter Advisor
+
+We developed empirical advisors to recommend a Trotter-step count without performing a complete noisy scan for every new noise setting.
+
+### Advisor V1
+
+The initial advisor uses a linear noise-penalty approximation.
+
+### Advisor V2
+
+The improved advisor uses a quadratic step-dependent penalty:
+
+\[
+\widehat E(n,s)=1-F_{\mathrm{ideal}}(n)+\alpha sn^2
+\]
+
+where:
+
+- \(n\) is the Trotter-step count.
+- \(s\) is the noise scale.
+- \(F_{\mathrm{ideal}}(n)\) is the ideal Trotter fidelity.
+- \(\alpha\) is an empirically fitted coefficient.
+
+The quadratic penalty is an empirical prediction model, not a claim that all physical quantum noise grows quadratically.
+
+### Held-Out Validation
+
+The advisor was evaluated on five held-out noise settings:
+
+`0.4, 0.9, 1.25, 1.8, 2.8`
+
+| Method | Exact step-count matches | Mean fidelity regret |
 |---|---:|---:|
-| Q-OPTIMA quadratic advisor | 3/5 | 0.000422 |
-| Linear advisor | 2/5 | 0.001943 |
-| Fixed 6 steps | 2/5 | 0.009714 |
-| Fixed 7 steps | 1/5 | 0.010040 |
-| Fixed 8 steps | 1/5 | 0.024877 |
-| Fixed 16 steps | 0/5 | 0.187292 |
+| Advisor V1 | 2/5 | 0.001943 |
+| Advisor V2 | 3/5 | 0.000422 |
+| Fixed 6 steps | — | 0.009714 |
+| Fixed 7 steps | — | 0.010040 |
+| Fixed 8 steps | — | 0.024877 |
+| Fixed 16 steps | — | 0.187292 |
 
-Q-OPTIMA achieved approximately 95.7% lower mean fidelity regret than the strongest fixed-step baseline evaluated.
+Advisor V2 produced lower mean fidelity regret than these tested baselines.
 
-These results are specific to the tested processor, Hamiltonian, and noise settings.
+The evaluation is limited to five held-out settings under the simulated model.
 
-## Additional Experiments
+## 6. Ultimate Hybrid Advisor
 
-- Bell-state verification on adjacent and nonadjacent qubit pairs
-- Circuit resource and routing-overhead analysis
-- Approximation-versus-noise error decomposition
-- Comparison of linear and quadratic noise-penalty models
-- Independent simulation-based advisor evaluation
+The Ultimate Hybrid Advisor combines:
 
-## Project Structure
+1. Noise-aware Trotter-step prediction.
+2. Processor resource comparison.
+3. Two-qubit gate-count evaluation.
+4. Physical-qubit requirements.
+5. A processor and step-count recommendation.
+
+For the tested configurations, it recommends Processor D.
+
+| Noise scale | Recommended steps | Two-qubit gates | Physical qubits |
+|---|---:|---:|---:|
+| 0.4× | 8 | 64 | 4 |
+| 0.5× | 8 | 64 | 4 |
+| 0.9× | 7 | 56 | 4 |
+| 1.0× | 7 | 56 | 4 |
+| 1.25× | 7 | 56 | 4 |
+| 1.8× | 6 | 48 | 4 |
+| 2.0× | 6 | 48 | 4 |
+| 2.8× | 6 | 48 | 4 |
+
+The hybrid advisor agrees with the V2 step predictor on all five compared held-out settings. This represents agreement between the two methods, not five correct predictions against the simulated optimum.
+
+A separate predictive advisor was also evaluated. Its held-out performance was weaker, with 1/5 exact step-count matches and mean fidelity regret of 0.003604. We retain this result for transparency.
+
+## 7. Zero-Noise Extrapolation Extension
+
+We additionally investigated Zero-Noise Extrapolation (ZNE) as an error-mitigation extension.
+
+ZNE estimates a lower-noise observable by combining measurements or simulations performed at different effective noise levels.
+
+The experiments compare raw noisy observables against ZNE estimates, using the ideal Trotter observable as the reference.
+
+### Validation Experiment
+
+Across 20 simulated trials:
+
+| Metric | Result |
+|---|---:|
+| Trials | 20 |
+| Trials with reduced error | 20 |
+| Mean raw observable error | 0.183214 |
+| Mean ZNE observable error | 0.073224 |
+| Mean error reduction | 60.03% |
+
+### Robustness Experiment
+
+| Trotter steps | Improved trials | Mean raw error | Mean ZNE error | Error reduction |
+|---|---:|---:|---:|---:|
+| 7 | 20/20 | 0.177074 | 0.063891 | 63.92% |
+| 8 | 20/20 | 0.208288 | 0.092614 | 55.54% |
+
+These results support the effectiveness of the tested ZNE procedure for reducing observable error under the simulated conditions.
+
+**Important distinction:** ZNE improves the estimated observable in these experiments. It does not physically remove gate noise or demonstrate an equivalent improvement in quantum state fidelity.
+
+## 8. Repository Structure
 
 ```text
 Q-OPTIMA-2026/
+│
+├── README.md
 ├── main.ipynb
-├── ps_s3_simulation.py
-├── run_s3_benchmark.py
-├── run_bell.py
-├── error_decomposition.py
-├── trotter_advisor.py
-├── validate_advisor.py
-├── advisor_v2.py
-├── final_advisor_test.py
-├── v2_fixed_step_test.py
-├── validate_q_optima.py
+├── requirements.txt
+│
+├── advisors/
+│   ├── advisor_v2.py
+│   ├── trotter_advisor.py
+│   ├── ultimate_hybrid_advisor.py
+│   ├── ultimate_predictive_advisor.py
+│   └── ultimate_processor_advisor.py
+│
+├── experiments/
+│   ├── ps_s3_simulation.py
+│   ├── run_s3_benchmark.py
+│   ├── run_bell.py
+│   ├── make_s3_graphs.py
+│   ├── error_decomposition.py
+│   ├── v2_baseline_comparison.py
+│   ├── v2_fixed_step_test.py
+│   ├── zne_s3_validation.py
+│   └── zne_s3_robustness.py
+│
+├── validation/
+│   ├── test_setup.py
+│   ├── test_noisy.py
+│   ├── validate_q_optima.py
+│   ├── validate_advisor.py
+│   ├── final_advisor_test.py
+│   └── ultimate_validation.py
+│
 ├── processors/
-│   └── processor_D.json
-├── starter/
-│   └── qff_sim.py
+│   ├── processor_D.json
+│   └── Processor_D_3AM_ENGINEERS.jpg
+│
 ├── results/
 │   ├── tables/
 │   └── figures/
-└── requirements.txt
+│
+├── starter/
+│   └── qff_sim.py
+│
+└── tools/
+    └── create_processor_d_jpeg.py
 ```
 
-Additional validation and plotting scripts are included in the repository.
+The repository also includes technical PDF reports and additional supporting result files.
 
-## Installation
+## 9. Quick Reproduction
 
-Python 3.12 is recommended.
+### Prerequisites
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+- Python 3.12
+- Qiskit
+- Qiskit Aer
+- NumPy
+- SciPy
+- Matplotlib
+- Jupyter
+
+Install the dependencies from the repository root:
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-The working development environment used:
+### Run the Main Notebook
 
-- Python 3.12.10
-- Qiskit 2.5.2
-- Qiskit Aer 0.17.2
-- NumPy 2.5.4
-- SciPy 1.18.1
-- Matplotlib 3.11.2
+Open:
 
-## Reproduction
-
-Open `main.ipynb` in VS Code or Jupyter, select the Python environment, and run all cells.
-
-Alternatively:
-
-```powershell
-python run_s3_benchmark.py
-python run_bell.py
-python error_decomposition.py
-python final_advisor_test.py
-python v2_fixed_step_test.py
-python validate_q_optima.py
+```text
+main.ipynb
 ```
 
-The scripts generate numerical results under `results/tables/` and figures under `results/figures/`.
+Select a Python environment containing the dependencies and run the notebook cells in order.
 
-## Limitations
+The notebook integrates the simulation workflow, processor comparison, advisor evaluation, and supporting experiments.
 
-Q-OPTIMA is evaluated using classical quantum-circuit simulation, not a physical quantum computer. Its advisor has been tested primarily on a single four-qubit Hamiltonian and custom processor. The quadratic noise model is empirical rather than a universal physical law.
+### Run the Main Benchmark
 
-## AI Assistance Disclosure
+```bash
+python experiments/run_s3_benchmark.py
+```
 
-Generative AI assisted with code drafting, debugging, experiment planning, documentation, and interpretation. The reported numerical results were generated and checked by executing the simulation scripts.
+### Generate the Figures
 
-## Competition Submission
+```bash
+python experiments/make_s3_graphs.py
+python experiments/error_decomposition.py
+```
 
-git status --short
+### Run the Hybrid Advisor
+
+```bash
+python advisors/ultimate_hybrid_advisor.py
+```
+
+### Run ZNE Validation
+
+```bash
+python experiments/zne_s3_validation.py
+```
+
+### Run ZNE Robustness Tests
+
+```bash
+python experiments/zne_s3_robustness.py
+```
+
+### Run Validation Scripts
+
+```bash
+python validation/test_setup.py
+python validation/test_noisy.py
+python validation/validate_q_optima.py
+python validation/validate_advisor.py
+python validation/final_advisor_test.py
+python validation/ultimate_validation.py
+```
+
+All commands are intended to be run from the repository root. The reorganized scripts should be verified after relocation before relying on these commands.
+
+## 10. Important Output Files
+
+### Main Simulation
+
+- `results/tables/s3_scan.csv`
+- `results/tables/s3_summary.csv`
+- `results/tables/resources.csv`
+- `results/tables/bell.csv`
+
+### Advisor Evaluation
+
+- `results/tables/advisor_final_validation.csv`
+- `results/tables/v2_fixed_step_comparison.csv`
+- `results/tables/v2_fixed_step_scan.csv`
+- `results/tables/ultimate_hybrid_recommendations.csv`
+- `results/tables/ultimate_validation.csv`
+
+### ZNE Evaluation
+
+- `results/tables/zne_s3_validation.csv`
+- `results/tables/zne_s3_robustness.csv`
+- `results/tables/zne_s3_robustness_summary.csv`
+
+### Figures
+
+- `results/figures/noise_crossover.png`
+- `results/figures/processor_comparison.png`
+- `results/figures/error_decomposition.png`
+
+## 11. Technical Reports
+
+The repository contains reports documenting the quantum model, noise assumptions, experimental methodology, and evaluation results.
+
+The primary reports are:
+
+- `Q_OPTIMA_ULTIMATE_Final_Technical_Report.pdf` — Ultimate advisor and main technical evaluation.
+- `Q_OPTIMA_ULTIMATE_ZNE_Final_Technical_Report.pdf` — ZNE extension and validation.
+- `REPORT OF THE SOLUTION.pdf` — Original solution report.
+
+These reports provide additional details beyond the README.
+
+## 12. Limitations
+
+- All reported experiments use quantum simulation rather than measurements from actual IBM quantum hardware.
+- The noise models are simplified and may not represent all physical error mechanisms.
+- The advisor validation uses a limited number of held-out noise settings.
+- The empirical advisor is not guaranteed to generalize to other Hamiltonians, processors, or noise models.
+- Processor recommendations depend on the tested configurations and resource criteria.
+- ZNE results demonstrate improvements in selected observable estimates, not universal error mitigation.
+- Additional hardware testing and larger-scale validation are needed before deployment claims can be made.
+
+## 13. AI Assistance Disclosure
+
+AI-assisted tools were used during development to support code drafting, debugging, documentation, and experiment planning.
+
+The team was responsible for running the simulations, reviewing the results, checking the outputs, and preparing the submission.
+
+All reported numerical results are based on the project's saved experiments rather than claimed physical-hardware measurements.
+
+## 14. Team — 3AM ENGINEERS
+
+| Member | Role |
+|---|---|
+| Dheeraj Koushik | Team Lead |
+| Sampurna Biswas | Team Member |
+| Rishi Matam | Team Member |
+| Sachin Sreenivas | Team Member |
+| Dhruv Om | Team Member |
+| Giri Samarth | Team Member |
+
+## 15. Project Repository
+
+GitHub: https://github.com/DheerajKoushik1905/Q-OPTIMA-2026
+
+**Q-OPTIMA ULTIMATE — Finding practical Trotter-step and processor choices under simulated quantum noise.**

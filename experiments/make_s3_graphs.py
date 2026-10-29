@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 TABLE = ROOT / "results" / "tables" / "s3_scan.csv"
 FIGURES = ROOT / "results" / "figures"
 FIGURES.mkdir(parents=True, exist_ok=True)

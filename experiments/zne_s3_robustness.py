@@ -8,7 +8,7 @@ from qiskit import ClassicalRegister
 from qiskit.quantum_info import Statevector
 from qiskit_aer import AerSimulator
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "starter"))
 
 from qff_sim import (

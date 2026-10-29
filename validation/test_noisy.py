@@ -5,7 +5,8 @@ from pathlib import Path
 from qiskit.quantum_info import Statevector
 
 # Import the official organizer helper.
-sys.path.insert(0, str(Path(__file__).parent / "starter"))
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "starter"))
 
 from qff_sim import (
     load_processor,
@@ -25,7 +26,7 @@ T = 2.0
 INITIAL_STATE = "1010"
 
 # Load our validated custom processor.
-processor_d = load_processor("processors/processor_D.json")
+processor_d = load_processor(str(ROOT / "processors" / "processor_D.json"))
 
 # Calculate the exact quantum state.
 H = tfim_hamiltonian(N, J=J, g=G, periodic=True)

@@ -2,7 +2,7 @@
 import csv
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 TABLES = ROOT / "results" / "tables"
 
 def read_csv(filename):
@@ -73,3 +73,5 @@ print("PASS: Optimal Trotter-step summaries")
 print("PASS: Bell fidelity sanity checks")
 print()
 print("Q-OPTIMA initial data validation completed.")
+
+from pathlib import Path

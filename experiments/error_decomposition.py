@@ -4,7 +4,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 INPUT = ROOT / "results" / "tables" / "s3_scan.csv"
 OUTPUT = ROOT / "results" / "tables" / "error_decomposition.csv"
 FIGURE = ROOT / "results" / "figures" / "error_decomposition.png"

@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 TABLES = ROOT / "results" / "tables"
 
 def read_csv(name):

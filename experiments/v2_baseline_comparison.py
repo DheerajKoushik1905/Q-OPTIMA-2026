@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 from statistics import mean
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 TABLES = ROOT / "results" / "tables"
 OUTPUT = TABLES / "v2_baseline_comparison.csv"
 
