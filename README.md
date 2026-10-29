@@ -10,7 +10,7 @@ and Trotter-step recommendation project developed by
 | What you want to see | Where to find it |
 |---|---|
 | Main reproducible experiment | `main.ipynb` |
-| Technical report | `REPORT OF THE SOLUTION.pdf` |
+| Technical report | `Q_OPTIMA_ULTIMATE_Final_Technical_Report.pdf` |
 | Custom Processor D | `processors/processor_D.json` |
 | Processor D diagram | `processors/Processor_D_3AM_ENGINEERS.jpg` |
 | Required benchmark results | `results/tables/` |
