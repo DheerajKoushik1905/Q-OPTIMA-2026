@@ -135,4 +135,3 @@ Generative AI assisted with code drafting, debugging, experiment planning, docum
 
 ## Competition Submission
 
-Qiskit Fall Fest 2026 — Phase 2, Quantum Simulation Track, Problem Statement S3.

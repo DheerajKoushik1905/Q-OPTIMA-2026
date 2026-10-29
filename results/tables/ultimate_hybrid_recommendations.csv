@@ -1,0 +1,9 @@
+noise_scale,processor,steps,two_q,depth,physical_qubits,routing_overhead
+0.4,D,8,64,89,4,0
+0.5,D,8,64,89,4,0
+0.9,D,7,56,78,4,0
+1.0,D,7,56,78,4,0
+1.25,D,7,56,78,4,0
+1.8,D,6,48,67,4,0
+2.0,D,6,48,67,4,0
+2.8,D,6,48,67,4,0
